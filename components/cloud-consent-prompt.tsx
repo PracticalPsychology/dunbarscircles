@@ -14,6 +14,7 @@ import {
   CLOUD_CONSENT_REQUEST_EVENT,
   setCloudConsent,
 } from "@/lib/cloud-consent";
+import { getPendingOwnerConflict } from "@/lib/device-data";
 
 /**
  * Asks for an explicit choice before any cloud backup. Opened after sign-in
@@ -26,7 +27,9 @@ export function CloudConsentPrompt() {
   useEffect(() => {
     const open = (e: Event) => {
       const id = (e as CustomEvent<{ uid?: string }>).detail?.uid;
-      if (id) setUid(id);
+      // Decide who owns the contacts in this browser first; the owner dialog
+      // asks for consent again once that is settled.
+      if (id && !getPendingOwnerConflict()) setUid(id);
     };
     window.addEventListener(CLOUD_CONSENT_REQUEST_EVENT, open);
     return () => window.removeEventListener(CLOUD_CONSENT_REQUEST_EVENT, open);

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Upload } from "lucide-react";
 // UI Components
 import { ContactsDashboard } from "../../components/contacts-dashboard";
+import { DeviceDataPanel } from "../../components/device-data-panel";
 import { ContactList } from "../../components/contact-list";
 import { ContactStatsDashboard } from "../../components/contact-stats-dashboard";
 import { ContactEditModal } from "../../components/contact-edit-modal";
@@ -506,7 +507,15 @@ export default function ContactsPage() {
             </LiquidCard>
 
             <LiquidCard hover>
-              <div className="flex items-center gap-3">
+              <button
+                type="button"
+                className="flex w-full items-center gap-3 text-left"
+                onClick={() =>
+                  document
+                    .getElementById("device-data")
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                }
+              >
                 <div className="p-2 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg text-white">
                   <Settings className="w-5 h-5" />
                 </div>
@@ -514,9 +523,9 @@ export default function ContactsPage() {
                   <h3 className="font-semibold text-orange-600 dark:text-orange-400">
                     Manage Settings
                   </h3>
-                  <p className="text-sm text-gray-500">Preferences</p>
+                  <p className="text-sm text-gray-500">Backup &amp; reset</p>
                 </div>
-              </div>
+              </button>
             </LiquidCard>
           </div>
         </motion.div>
@@ -602,6 +611,12 @@ export default function ContactsPage() {
               onAddContact={handleBackupAdd}
               onImported={() => void reloadContacts()}
             />
+          </LiquidCard>
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <LiquidCard>
+            <DeviceDataPanel />
           </LiquidCard>
         </motion.div>
 

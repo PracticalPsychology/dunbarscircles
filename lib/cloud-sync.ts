@@ -21,8 +21,21 @@ import { onAuthStateChanged } from "firebase/auth";
 import { CONTACTS_CHANGED_EVENT } from "./contact-events";
 import { prepareStoreWrite } from "./contact-store-write";
 import { migrateContactsUp } from "./schema-migrations";
-import { CLOUD_CONSENT_CHANGED_EVENT, hasCloudConsent } from "./cloud-consent";
 import {
+  CLOUD_CONSENT_CHANGED_EVENT,
+  hasCloudConsent,
+  setCloudConsent,
+} from "./cloud-consent";
+import {
+  checkLocalOwner,
+  clearOwnerConflict,
+  discardLocalContacts,
+  requestOwnerResolution,
+  setLocalOwner,
+  wipeLocalData,
+} from "./device-data";
+import {
+  deleteAllForUser,
   pushUser,
   syncUser,
   isBuiltInDemo,
@@ -107,6 +120,14 @@ export function getSyncState(): { state: SyncState; error: string | null } {
  */
 export async function syncOnSignIn(uid: string): Promise<void> {
   if (!db) return;
+  // Local contacts that belong to another account never sync until the user
+  // decides what to do with them (components/owner-conflict-dialog.tsx).
+  if (checkLocalOwner(uid) === "conflict") {
+    readyUid = null;
+    state = "off";
+    requestOwnerResolution(uid);
+    return;
+  }
   // Nothing leaves the browser without the user's recorded choice.
   if (!hasCloudConsent(uid)) {
     readyUid = null;
@@ -200,6 +221,90 @@ function schedulePush(): void {
     pushTimer = null;
     runPush();
   }, PUSH_DEBOUNCE_MS);
+}
+
+/**
+ * Resolve an owner conflict for `uid`. "keep" ties the contacts in this
+ * browser to the new account; "discard" removes them first. Either way the
+ * conflict is cleared and sync is retried for the signed-in account.
+ */
+export function resolveOwnerConflict(
+  uid: string,
+  choice: "keep" | "discard",
+): void {
+  if (choice === "discard") discardLocalContacts();
+  setLocalOwner(uid);
+  clearOwnerConflict();
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(
+      new CustomEvent(CONTACTS_CHANGED_EVENT, { detail: "owner-resolved" }),
+    );
+  }
+  if (currentUid === uid) void syncOnSignIn(uid);
+}
+
+/** Stop all pending and future pushes until sync is started again. */
+export function pauseSync(): void {
+  if (pushTimer) clearTimeout(pushTimer);
+  pushTimer = null;
+  pushAgain = false;
+  readyUid = null;
+  state = currentUid ? "off" : "signed-out";
+}
+
+/**
+ * Delete this account's cloud copy of the contact list. Signed-in only.
+ * Works whether or not backup is on, so a leftover copy can always be
+ * removed. Pushes are paused first so nothing re-creates the documents.
+ */
+export async function deleteCloudCopy(): Promise<{ deleted: number }> {
+  const uid = currentUid;
+  if (!uid || !db) throw new Error("Sign in to delete your cloud copy.");
+  pauseSync();
+  try {
+    return await deleteAllForUser(db, uid);
+  } catch (e) {
+    lastError = e instanceof Error ? e.message : String(e);
+    throw e;
+  }
+}
+
+/**
+ * Turn cloud backup off for the signed-in account, optionally deleting the
+ * cloud copy first. If deletion fails, backup stays on and the error is
+ * thrown, so the choice the user made is never half-applied.
+ */
+export async function turnOffCloudBackup(
+  options: { deleteCopy: boolean } = { deleteCopy: false },
+): Promise<{ deleted: number }> {
+  const uid = currentUid;
+  if (!uid) throw new Error("Sign in first.");
+  let deleted = 0;
+  if (options.deleteCopy) deleted = (await deleteCloudCopy()).deleted;
+  setCloudConsent(uid, "declined");
+  return { deleted };
+}
+
+export interface ResetOptions {
+  /** Also delete the signed-in account's cloud copy. */
+  deleteCloud: boolean;
+}
+
+/**
+ * Reset this device: optionally delete the cloud copy, then wipe everything
+ * the app stored in this browser. The cloud copy is deleted first; if that
+ * fails, nothing local is touched. Without `deleteCloud` the cloud copy is
+ * left alone, and pushes are paused so the wipe is not mirrored to it.
+ */
+export async function resetThisDevice(options: ResetOptions): Promise<void> {
+  if (options.deleteCloud) await deleteCloudCopy();
+  pauseSync();
+  wipeLocalData();
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(
+      new CustomEvent(CONTACTS_CHANGED_EVENT, { detail: "device-reset" }),
+    );
+  }
 }
 
 /** Start listening for sign-in. Idempotent; called by the storage services. */

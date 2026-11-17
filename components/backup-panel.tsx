@@ -4,7 +4,6 @@ import { Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { dunbarLevels } from "@/data/dunbarLevels";
 import {
-  buildBackup,
   contactKey,
   parseBackup,
   previewImport,
@@ -14,11 +13,9 @@ import {
 import {
   importHistory,
   importInteractions,
-  readHistory,
-  readInteractions,
   withChangeSource,
 } from "@/lib/relationship-log";
-import { generateFilename } from "@/lib/export-utils";
+import { downloadBackupFile } from "@/lib/backup-download";
 import { trackEvent } from "@/lib/analytics";
 import type { ContactForm } from "@/lib/contact-models";
 
@@ -43,22 +40,7 @@ export function BackupPanel({
   const [busy, setBusy] = useState(false);
 
   const handleExport = () => {
-    const json = JSON.stringify(
-      buildBackup(contacts, new Date(), {
-        interactions: readInteractions(),
-        history: readHistory(),
-      }),
-      null,
-      2,
-    );
-    const url = URL.createObjectURL(
-      new Blob([json], { type: "application/json" }),
-    );
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = generateFilename("dunbars-circles-backup", "json");
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadBackupFile(contacts);
     trackEvent("export_data", { format: "json" });
     toast.success(`Exported ${contacts.length} contacts`);
   };

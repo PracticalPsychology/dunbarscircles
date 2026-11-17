@@ -39,6 +39,8 @@ import {
 } from "lucide-react";
 import { Facebook, Linkedin } from "./brand-icons";
 import { EnhancedContactStorage } from "@/lib/contact-storage-enhanced";
+import { ResetDeviceDialog } from "./reset-device-dialog";
+import { TurnOffBackupDialog } from "./turn-off-backup-dialog";
 import type { StoredContact } from "@/lib/contact-storage";
 import {
   currentUserId,
@@ -49,7 +51,6 @@ import {
 import {
   CLOUD_CONSENT_CHANGED_EVENT,
   requestCloudConsent,
-  setCloudConsent,
 } from "@/lib/cloud-consent";
 import {
   contactRhythm,
@@ -117,6 +118,8 @@ export function ContactsDashboard({ levels }: ContactsDashboardProps) {
   }, []);
   const [error, setError] = useState<string | null>(null);
   const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showReset, setShowReset] = useState(false);
+  const [showTurnOff, setShowTurnOff] = useState(false);
   const [stats, setStats] = useState({
     total: 0,
     bySource: { facebook: 0, linkedin: 0, manual: 0 },
@@ -365,29 +368,6 @@ export function ContactsDashboard({ levels }: ContactsDashboardProps) {
     }
   };
 
-  const clearAllContacts = async () => {
-    if (
-      confirm(
-        "Are you sure you want to clear all imported contacts? This action cannot be undone.",
-      )
-    ) {
-      try {
-        // Clears this browser; when signed in, cloud-sync removes the
-        // cloud copy as well.
-        await EnhancedContactStorage.clearAllContacts("CLEAR_ALL_CONTACTS");
-        setContacts([]);
-        setStats({
-          total: 0,
-          bySource: { facebook: 0, linkedin: 0, manual: 0 },
-          byLevel: {},
-        });
-      } catch (error) {
-        console.error("Failed to clear contacts:", error);
-        alert("Failed to clear contacts. Please try again.");
-      }
-    }
-  };
-
   const refreshContacts = async () => {
     setLoading(true);
     setError(null);
@@ -566,7 +546,7 @@ export function ContactsDashboard({ levels }: ContactsDashboardProps) {
                       const uid = currentUserId();
                       if (!uid) return;
                       if (backup.state === "off") requestCloudConsent(uid);
-                      else setCloudConsent(uid, "declined");
+                      else setShowTurnOff(true);
                     }}
                   >
                     {backup.state === "off"
@@ -865,13 +845,13 @@ export function ContactsDashboard({ levels }: ContactsDashboardProps) {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={clearAllContacts}
+                    onClick={() => setShowReset(true)}
                     className="text-red-600 hover:text-red-700"
                     disabled={contacts.length === 0 || loading}
-                    aria-label={`Clear all ${contacts.length} contacts permanently`}
-                    title="Clear all contacts (cannot be undone)"
+                    aria-label={`Reset this device and remove all ${contacts.length} contacts`}
+                    title="Remove all contacts from this browser (asks you to confirm)"
                   >
-                    Clear All
+                    Clear All…
                   </Button>
                 </div>
               </div>
@@ -1085,6 +1065,12 @@ export function ContactsDashboard({ levels }: ContactsDashboardProps) {
           }}
         />
       )}
+      <ResetDeviceDialog open={showReset} onOpenChange={setShowReset} />
+      <TurnOffBackupDialog
+        open={showTurnOff}
+        onOpenChange={setShowTurnOff}
+        mode="turn-off"
+      />
     </div>
   );
 }

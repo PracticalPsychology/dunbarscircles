@@ -240,6 +240,23 @@ export async function syncUser(
   return { merged, upserted, deleted, migrated: legacy.length };
 }
 
+/**
+ * Delete every cloud document this user owns, in both the current and the
+ * retired collection. Returns how many documents were removed.
+ */
+export async function deleteAllForUser(
+  firestore: Firestore,
+  uid: string,
+): Promise<{ deleted: number }> {
+  const ops: Op[] = [];
+  for (const col of [CONTACTS_COLLECTION, LEGACY_CONTACTS_COLLECTION]) {
+    const docs = await fetchCollection(firestore, col, uid);
+    for (const d of docs) ops.push({ kind: "delete", col, id: d.id });
+  }
+  await commitOps(firestore, ops);
+  return { deleted: ops.length };
+}
+
 /** Make the cloud copy equal to `local` (after the first sync). */
 export async function pushUser(
   firestore: Firestore,
