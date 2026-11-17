@@ -179,7 +179,7 @@ export const mockNextRouter: any = (overrides = {}) => {
     ...overrides,
   };
 
-  vi.mock("next/router", () => ({
+  vi.doMock("next/router", () => ({
     useRouter: () => mockRouter,
   }));
 

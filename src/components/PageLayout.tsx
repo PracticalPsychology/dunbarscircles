@@ -670,6 +670,14 @@ export default function PageLayout({
             >
               Sitemap
             </Link>
+            <a
+              href="https://github.com/practical-psychology/dunbarscircles"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              GitHub
+            </a>
           </p>
           <p>&copy; {new Date().getFullYear()} Dunbar&apos;s Circles</p>
         </footer>

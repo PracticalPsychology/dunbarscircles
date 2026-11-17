@@ -402,7 +402,7 @@ export const simulateURLError = (
 // Helper to setup Router context mocks
 export const setupRouterMocks = () => {
   // Ensure Router context is properly mocked
-  vi.mock("react-router-dom", async () => {
+  vi.doMock("react-router-dom", async () => {
     const actual = await vi.importActual("react-router-dom");
     return {
       ...actual,

@@ -1,7 +1,6 @@
 import "@testing-library/jest-dom";
 import { vi, beforeAll, afterEach, afterAll, beforeEach } from "vitest";
 import { firebaseMocks } from "./firebase-mocks";
-import React from "react";
 
 interface LocalStorageMock extends Storage {
   _clearError?: () => void;
@@ -187,29 +186,6 @@ beforeAll(() => {
       originalWarn(...args);
     },
   };
-
-  // Set up any other global test configurations
-  vi.mock("next/head", () => ({
-    __esModule: true,
-    default: ({ children }: { children: React.ReactNode }) => {
-      return React.createElement(React.Fragment, null, children);
-    },
-  }));
-
-  // Mock next/link
-  vi.mock("next/link", () => {
-    return ({
-      children,
-      href,
-      ...props
-    }: {
-      children: React.ReactNode;
-      href: string;
-      [key: string]: any;
-    }) => {
-      return React.createElement("a", { href, ...props }, children);
-    };
-  });
 });
 
 afterEach(() => {
@@ -476,12 +452,19 @@ global.URL.createObjectURL = vi.fn(() => "mock-object-url");
 global.URL.revokeObjectURL = vi.fn();
 
 // Mock File and FileReader for file upload testing
-global.File = vi.fn().mockImplementation((chunks, filename, options) => ({
-  name: filename,
-  size: chunks.reduce((acc: number, chunk: any) => acc + chunk.length, 0),
-  type: options?.type || "",
-  lastModified: Date.now(),
-})) as any;
+global.File = vi.fn().mockImplementation(function (
+  this: any,
+  chunks: any[],
+  filename: string,
+  options?: { type?: string },
+) {
+  return {
+    name: filename,
+    size: chunks.reduce((acc: number, chunk: any) => acc + chunk.length, 0),
+    type: options?.type || "",
+    lastModified: Date.now(),
+  };
+}) as any;
 
 global.FileReader = vi.fn().mockImplementation(() => ({
   readAsText: vi.fn(function (this: any) {
