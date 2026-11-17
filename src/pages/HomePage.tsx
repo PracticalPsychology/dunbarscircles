@@ -7,7 +7,7 @@ import { LiquidButton } from "@/components/ui/liquid-button";
 import { NetworkDiagram } from "@/components/network-diagram";
 import { Eye, Users, Heart, Book, Share2, ShieldCheck } from "lucide-react";
 import PageLayout from "../components/PageLayout";
-import { dunbarLevels } from "../data/dunbarLevels";
+import { dunbarLevels } from "@/data/dunbarLevels";
 
 export default function HomePage() {
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);

@@ -49,13 +49,26 @@ export default defineConfig({
   },
   build: {
     outDir: "dist",
-    sourcemap: true,
+    sourcemap: "hidden",
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ["react", "react-dom", "react-router-dom"],
-          firebase: ["firebase/app", "firebase/auth", "firebase/firestore"],
-          motion: ["framer-motion"],
+        manualChunks: (id: string) => {
+          if (
+            id.includes("node_modules/react") ||
+            id.includes("node_modules/react-dom") ||
+            id.includes("node_modules/react-router-dom")
+          ) {
+            return "react";
+          }
+          if (
+            id.includes("node_modules/firebase") ||
+            id.includes("node_modules/@firebase")
+          ) {
+            return "firebase";
+          }
+          if (id.includes("node_modules/framer-motion")) {
+            return "motion";
+          }
         },
       },
     },

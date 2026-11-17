@@ -1,7 +1,7 @@
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Label } from "./ui/label";
-import { dunbarLevels } from "../data/dunbarLevels";
+import { dunbarLevels } from "@/data/dunbarLevels";
 import { Users, Clock, Brain } from "lucide-react";
 import { cn } from "../lib/utils";
 

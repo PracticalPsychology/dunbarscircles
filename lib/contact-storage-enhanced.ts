@@ -1,5 +1,5 @@
 // Enhanced contact storage with database integration, authorization, and fallback
-import type { Person } from "../src/types/relationships";
+import type { Person } from "../types/relationships";
 import { notifyLocalChange, startCloudSync } from "./cloud-sync";
 import { prepareStoreWrite } from "./contact-store-write";
 import { ensureLocalSchema } from "./schema-migrations";

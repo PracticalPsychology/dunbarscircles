@@ -4,7 +4,7 @@ import {
   ErrorBoundary,
   DataErrorFallback,
 } from "../../components/error-boundary";
-import { dunbarLevels } from "../../data/dunbarLevels";
+import { dunbarLevels } from "@/data/dunbarLevels";
 import PageLayout from "../components/PageLayout";
 import { MobileAddContactFab } from "../../components/mobile-add-contact-fab";
 import { SavedLocallyIndicator } from "../../components/saved-locally-indicator";

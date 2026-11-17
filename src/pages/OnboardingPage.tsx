@@ -254,13 +254,13 @@ const tutorialSteps: TutorialStep[] = [
   },
   {
     id: 4,
-    title: "Share2 Diagram",
+    title: "Network Diagram",
     description: "Exploring connections and relationship patterns",
     category: "visualization",
     icon: <Share2 className="w-6 h-6" />,
     content: (
       <div className="space-y-6">
-        <h3 className="text-xl font-semibold">Share2 Visualization</h3>
+        <h3 className="text-xl font-semibold">Network Visualization</h3>
 
         <div className="bg-muted/50 rounded-lg p-6">
           <h4 className="font-semibold mb-3">Interactive Features</h4>
@@ -751,14 +751,14 @@ const OnboardingPage = () => {
         </div>
 
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-4 gap-8">
+          <div className="grid lg:grid-cols-4 gap-8 auto-rows-max">
             {/* Sidebar Navigation */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 min-w-0 lg:sticky lg:top-8">
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Tutorial Steps</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="space-y-2 max-h-[400px] lg:max-h-none overflow-y-auto lg:overflow-visible">
                   {tutorialSteps.map((step, index) => (
                     <button
                       key={step.id}
@@ -802,7 +802,7 @@ const OnboardingPage = () => {
             </div>
 
             {/* Main Content */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 min-w-0">
               <Card className="min-h-[600px]">
                 <CardHeader>
                   <div className="flex items-center justify-between">

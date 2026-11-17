@@ -22,7 +22,7 @@ import {
   countSamples,
   withoutSamples,
 } from "../../../lib/sample-data";
-import { dunbarLevels } from "../../data/dunbarLevels";
+import { dunbarLevels } from "@/data/dunbarLevels";
 
 const LEVEL_IDS = dunbarLevels.map((l) => l.id);
 const service = () => ContactStorageService.getInstance();

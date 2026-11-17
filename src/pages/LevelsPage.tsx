@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { LevelDetails } from "@/components/level-details";
 import PageLayout from "../components/PageLayout";
-import { dunbarLevels } from "../data/dunbarLevels";
+import { dunbarLevels } from "@/data/dunbarLevels";
 
 export default function LevelsPage() {
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);

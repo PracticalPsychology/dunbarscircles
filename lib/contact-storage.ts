@@ -1,4 +1,4 @@
-import type { Person } from "../src/types/relationships";
+import type { Person } from "../types/relationships";
 
 /**
  * Contact shape used by the dashboard and edit page. Stored in the browser

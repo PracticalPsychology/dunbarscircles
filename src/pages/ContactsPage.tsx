@@ -41,7 +41,7 @@ const Search = () => <span>🔍</span>;
 const Filter = () => <span>⚙️</span>;
 const Download = () => <span>⬇️</span>;
 const Settings = () => <span>⚙️</span>;
-import { dunbarLevels } from "../data/dunbarLevels";
+import { dunbarLevels } from "@/data/dunbarLevels";
 import {
   ContactStorageService,
   type StoredContact,

@@ -138,7 +138,7 @@ export const mockAuth = {
 };
 
 // Mock Firestore
-export const mockFirestore = {
+export const mockFirestore: any = {
   collection: vi.fn(() => ({
     doc: vi.fn(() => ({
       get: vi.fn(() =>
@@ -183,7 +183,8 @@ export const mockDoc = vi.fn(() => ({
   delete: vi.fn(() => Promise.resolve()),
 }));
 
-export const mockCollection = vi.fn(() => ({
+// @ts-ignore - Type inference from vi.fn()
+export const mockCollection: any = vi.fn(() => ({
   doc: mockDoc,
   add: vi.fn(() => Promise.resolve({ id: "mock-doc-id" })),
   where: vi.fn(() => ({
@@ -211,7 +212,8 @@ export const mockInitializeApp = vi.fn(() => mockFirebaseApp);
 
 export const mockGetAuth = vi.fn(() => mockAuth);
 
-export const mockGetFirestore = vi.fn(() => mockFirestore);
+// @ts-ignore - Type inference from vi.fn()
+export const mockGetFirestore: any = vi.fn(() => mockFirestore);
 
 // Helper functions for test setup
 export const setAuthUser = (user: any) => {
@@ -353,7 +355,8 @@ export const onAuthStateChanged = mockOnAuthStateChanged;
 export const signOut = mockSignOut;
 
 // Export all mocks for easy importing
-export const firebaseMocks = {
+// @ts-ignore - Type inference from vi.fn()
+export const firebaseMocks: any = {
   auth: mockAuth,
   user: mockUser,
   googleAuthProvider: mockGoogleAuthProvider,

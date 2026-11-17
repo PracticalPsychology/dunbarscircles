@@ -141,6 +141,30 @@ const esc = (v: unknown) =>
       ]!,
   );
 
+// Escape CSV field values to prevent formula injection and handle quotes
+const escapeCSVField = (value: unknown): string => {
+  const str = String(value ?? "");
+
+  // Double any embedded quotes
+  let escaped = str.replace(/"/g, '""');
+
+  // Prefix with single quote if value starts with formula injection characters
+  if (/^[\=\+\-\@\t\r]/.test(escaped)) {
+    escaped = "'" + escaped;
+  }
+
+  // Wrap in quotes (required if contains comma, newline, or quote)
+  if (
+    escaped.includes(",") ||
+    escaped.includes("\n") ||
+    escaped.includes('"')
+  ) {
+    escaped = `"${escaped}"`;
+  }
+
+  return escaped;
+};
+
 // Export relationship data as CSV with error handling
 export const exportToCSV = (
   people: Person[],
@@ -194,11 +218,15 @@ export const exportToCSV = (
       ];
     });
 
-    const csvContent = [headers, ...rows]
-      .map((row) => row.map((field) => `"${field}"`).join(","))
+    // UTF-8 BOM to ensure proper encoding in Excel
+    let csvContent = "\uFEFF";
+
+    csvContent += headers.map(escapeCSVField).join(",") + "\n";
+    csvContent += rows
+      .map((row) => row.map(escapeCSVField).join(","))
       .join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv" });
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement("a");

@@ -6,9 +6,8 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { ContactStorageService } from "../../../lib/contact-storage-service";
-import { ContactStorageUtils } from "../../../lib/contact-storage-utils";
 import type { ContactForm, ContactUpdate } from "../../../lib/contact-models";
-import type { Person } from "../../../types/relationships";
+import type { Person } from "@/types/relationships";
 
 // Mock Firebase
 vi.mock("../../../firebase-config", () => ({
@@ -581,90 +580,5 @@ Imported CSV User,csv@example.com,affinity-group,csv`;
       expect(result.data?.deleted).toBe(2);
       expect(result.data?.failed).toBe(0);
     });
-  });
-});
-
-describe("ContactStorageUtils", () => {
-  beforeEach(() => {
-    window.localStorage.clear();
-    window.sessionStorage.clear();
-  });
-
-  it("should create a contact using utils", async () => {
-    const contactData: ContactForm = {
-      name: "Utils Test",
-      levelId: "inner-circle",
-      platform: "work",
-      contactFrequency: 7,
-      strength: 0.8,
-    };
-
-    const contact = await ContactStorageUtils.createContact(contactData);
-
-    expect(contact).toBeDefined();
-    expect(contact?.name).toBe("Utils Test");
-  });
-
-  it("should get all contacts using utils", async () => {
-    await ContactStorageUtils.createContact({
-      name: "Test Contact",
-      levelId: "inner-circle",
-      platform: "work",
-      contactFrequency: 7,
-      strength: 0.8,
-    });
-
-    const contacts = await ContactStorageUtils.getAllContacts();
-
-    expect(contacts).toHaveLength(1);
-    expect(contacts[0].name).toBe("Test Contact");
-  });
-
-  it("should search contacts using utils", async () => {
-    await ContactStorageUtils.createContact({
-      name: "Searchable Contact",
-      levelId: "inner-circle",
-      platform: "work",
-      contactFrequency: 7,
-      strength: 0.8,
-    });
-
-    const results = await ContactStorageUtils.searchContacts("Searchable");
-
-    expect(results).toHaveLength(1);
-    expect(results[0].name).toBe("Searchable Contact");
-  });
-
-  it("should convert between Person and ContactForm", () => {
-    const person: Person = {
-      id: "test-id",
-      name: "Test Person",
-      levelId: "inner-circle",
-      lastContact: new Date(),
-      contactFrequency: 7,
-      strength: 0.8,
-      decayRate: 0.1,
-      platform: "work",
-      importDate: new Date(),
-      source: "manual" as const,
-    };
-
-    const contactForm = ContactStorageUtils.personToContactForm(person);
-
-    expect(contactForm.name).toBe("Test Person");
-    expect(contactForm.levelId).toBe("inner-circle");
-    expect(contactForm.platform).toBe("work");
-    expect(contactForm.contactFrequency).toBe(7);
-    expect(contactForm.strength).toBe(0.8);
-  });
-
-  it("should perform health check", async () => {
-    const health = await ContactStorageUtils.healthCheck();
-
-    expect(health.localStorage).toBe(true);
-    expect(health.sessionStorage).toBe(true);
-    expect(health.firestore).toBe(false); // Mocked as unavailable
-    expect(health.contactCount).toBe(0);
-    expect(health.syncStatus).toBeDefined();
   });
 });

@@ -9,7 +9,7 @@ import {
 import { RadialDiagram } from "@/components/radial-diagram";
 import { Eye } from "lucide-react";
 import PageLayout from "../components/PageLayout";
-import { dunbarLevels } from "../data/dunbarLevels";
+import { dunbarLevels } from "@/data/dunbarLevels";
 import { CONTACTS_CHANGED_EVENT } from "@/lib/contact-events";
 import {
   countsInCircles,

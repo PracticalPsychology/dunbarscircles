@@ -17,20 +17,29 @@ export interface Person {
   name: string;
   levelId: string;
   lastContact: Date;
-  contactFrequency: number; // days between contacts
-  strength: number; // 0-1
-  decayRate: number; // how fast relationship decays
-  platform: string; // where you know them from
-  email?: string; // optional email address
-  phone?: string; // optional phone number
-  notes?: string; // optional notes about the relationship
-  tags?: string[]; // optional tags for categorization
-  importDate: Date; // when the contact was imported/added
-  source: string; // source of the contact (manual, facebook, linkedin, etc.)
+  contactFrequency: number;
+  strength: number;
+  decayRate: number;
+  platform: string;
+  email?: string;
+  phone?: string;
+  notes?: string;
+  importDate?: Date;
+  source?: string;
+  tags?: string[];
   x?: number;
   y?: number;
   vx?: number;
   vy?: number;
+}
+
+export interface StoredContact extends Person {
+  importDate: Date;
+  source: "facebook" | "linkedin" | "manual";
+  firestoreId?: string;
+  syncStatus?: "synced" | "pending" | "error";
+  lastSyncAt?: Date;
+  tags?: string[];
 }
 
 export interface ExportOptions {

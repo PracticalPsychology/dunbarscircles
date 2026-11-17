@@ -3,13 +3,6 @@ import { render, RenderResult } from "@testing-library/react";
 import { ReactElement } from "react";
 import { expect } from "vitest";
 
-// Type declaration for jest-axe
-declare module "vitest" {
-  interface Assertion<T = any> {
-    toHaveNoViolations(): T;
-  }
-}
-
 // Import and extend expect with jest-axe matchers
 const { toHaveNoViolations } = require("jest-axe");
 expect.extend(toHaveNoViolations);

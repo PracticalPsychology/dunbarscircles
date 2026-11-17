@@ -45,7 +45,7 @@ import {
 } from "../../components/relationship-traits-fields";
 import { RelationshipActivity } from "../../components/relationship-activity";
 import type { RelationshipProfile } from "../../lib/relationship-model";
-import { dunbarLevels } from "../../data/dunbarLevels";
+import { dunbarLevels } from "@/data/dunbarLevels";
 import { EnhancedContactStorage } from "../../lib/contact-storage-enhanced";
 import { trackEvent } from "../../lib/analytics";
 import { toast } from "sonner";

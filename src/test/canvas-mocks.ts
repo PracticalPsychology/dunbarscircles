@@ -287,7 +287,7 @@ export const createCanvasContextMock = () => {
 };
 
 // Enhanced Canvas mock with better error handling and type compatibility
-export const mockCanvas = {
+export const mockCanvas: any = {
   getContext: vi.fn((contextType: string, contextAttributes?: any) => {
     // contextAttributes parameter is intentionally unused in mock
     void contextAttributes;
@@ -355,7 +355,7 @@ export const mockCanvas = {
 };
 
 // Helper function to mock canvas creation
-export const mockCreateCanvas = (width = 300, height = 150) => {
+export const mockCreateCanvas: any = (width = 300, height = 150) => {
   const canvas = {
     ...mockCanvas,
     width,

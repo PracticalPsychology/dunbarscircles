@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Person, Level } from "../src/types/relationships";
+import type { Person, Level } from "../types/relationships";
 import { STAGES, CONTACT_STATUSES } from "./relationship-model";
 import type { Stage, ContactStatus } from "./relationship-model";
 
@@ -190,14 +190,21 @@ export type ContactUpdateData = z.infer<typeof contactUpdateSchema>;
 export const sanitizeContactData = {
   /**
    * Sanitizes and normalizes contact name
+   * Unicode-aware: preserves accented characters, Cyrillic, Chinese, and other scripts
    */
   name: (name: string): string => {
-    return name
+    const sanitized = name
       .trim()
       .replace(/<[^>]*>/g, "") // Remove HTML tags
       .replace(/\s+/g, " ") // Replace multiple spaces with single space
-      .replace(/[^\w\s\-'\.]/g, "") // Remove special characters except common name chars
+      .replace(/[^\p{L}\p{N}\s\-'\.]/gu, "") // Remove special chars, keep Unicode letters and numbers
       .substring(0, 100); // Truncate to max length
+
+    // Reject empty names after sanitizing
+    if (!sanitized || !sanitized.trim()) {
+      return "";
+    }
+    return sanitized;
   },
 
   /**

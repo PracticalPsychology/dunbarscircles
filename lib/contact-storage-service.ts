@@ -11,7 +11,7 @@
  * Requirements: FR-11 (User Authentication), NFR-7 (Data Privacy), DR-1 (Relationship Data Model)
  */
 
-import type { Person } from "../src/types/relationships";
+import type { Person } from "../types/relationships";
 import type { Contact, ContactForm, ContactUpdate } from "./contact-models";
 import { sanitizeContactData, validateContactData } from "./contact-models";
 import { auth } from "../firebase-config";
@@ -478,7 +478,7 @@ export class ContactStorageService {
       if (!validation.success) {
         return {
           success: false,
-          error: `Validation failed: ${validation.error.errors.map((e) => e.message).join(", ")}`,
+          error: `Validation failed: ${validation.error.issues.map((e: any) => e.message).join(", ")}`,
           source: "localStorage",
         };
       }
@@ -630,7 +630,7 @@ export class ContactStorageService {
       if (!validation.success) {
         return {
           success: false,
-          error: `Validation failed: ${validation.error.errors.map((e) => e.message).join(", ")}`,
+          error: `Validation failed: ${validation.error.issues.map((e: any) => e.message).join(", ")}`,
           source: "localStorage",
         };
       }

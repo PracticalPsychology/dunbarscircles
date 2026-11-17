@@ -157,7 +157,8 @@ export const renderWithTheme = (
 ) => customRender(ui, { ...options, theme });
 
 // Helper to mock next/router
-export const mockNextRouter = (overrides = {}) => {
+// @ts-ignore - Type inference from vi.fn()
+export const mockNextRouter: any = (overrides = {}) => {
   const mockRouter = {
     route: "/",
     pathname: "/",

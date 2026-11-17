@@ -1,6 +1,6 @@
 import { LifeStageComparison } from "@/components/life-stage-comparison";
 import PageLayout from "../components/PageLayout";
-import { dunbarLevels } from "../data/dunbarLevels";
+import { dunbarLevels } from "@/data/dunbarLevels";
 
 export default function LifecyclePage() {
   return (

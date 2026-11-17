@@ -13,15 +13,15 @@ The new Facebook API v2 format uses a simplified structure:
   "friends_v2": [
     {
       "name": "Martin K",
-      "timestamp": 1694403736
+      "timestamp": 1944403736
     },
     {
-      "name": "Yuri K",
-      "timestamp": 1672874610
+      "name": "Alex K",
+      "timestamp": 8672874610
     },
     {
-      "name": "Leyla S",
-      "timestamp": 1661808787
+      "name": "Keyla S",
+      "timestamp": 6661808787
     }
   ],
   "metadata": {
