@@ -16,22 +16,45 @@
       },
       { "source": "/contacts/**", "destination": "/index.html" }
     ],
+    "redirects": [
+      { "source": "/firebase-test", "destination": "/404.html", "code": 404 }
+    ],
     "headers": [
       {
         "source": "/@(onboarding|radial|levels|network|digital|lifecycle|dashboard|contacts|sitemap|privacy|about|evidence)",
-        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600, must-revalidate"
+          }
+        ]
       },
       {
         "source": "/contacts/**",
-        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600, must-revalidate"
+          }
+        ]
       },
       {
         "source": "/",
-        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600, must-revalidate"
+          }
+        ]
       },
       {
         "source": "/index.html",
-        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600, must-revalidate"
+          }
+        ]
       },
       {
         "source": "/404.html",
@@ -47,7 +70,16 @@
         ]
       },
       {
-        "source": "**/*.@(png|svg|ico|woff2|webmanifest|json)",
+        "source": "**/*.@(js|css|woff2)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(png|svg|ico|webmanifest|json)",
         "headers": [
           { "key": "Cache-Control", "value": "public, max-age=86400" }
         ]
@@ -75,7 +107,7 @@
           },
           {
             "key": "Strict-Transport-Security",
-            "value": "max-age=31536000; includeSubDomains"
+            "value": "max-age=31536000; includeSubDomains; preload"
           },
           {
             "key": "Content-Security-Policy",

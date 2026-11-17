@@ -96,6 +96,19 @@
           background: #0f172a;
         }
       }
+      /* Focus-visible for keyboard navigation (#76) */
+      *:focus-visible {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+      }
+      /* Respect motion preferences (#76) */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
       .boot {
         position: fixed;
         inset: 0;

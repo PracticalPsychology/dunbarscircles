@@ -736,9 +736,9 @@ const OnboardingPage = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">
+          <h2 className="text-4xl font-bold mb-2">
             Welcome to Dunbar's Circles
-          </h1>
+          </h2>
           <p className="text-xl text-muted-foreground mb-4">
             Learn how to visualize and understand your relationships
           </p>

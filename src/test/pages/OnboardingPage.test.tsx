@@ -22,7 +22,7 @@ describe("OnboardingPage", () => {
     expect(
       screen.getByRole("heading", {
         name: "Welcome to Dunbar's Circles",
-        level: 1,
+        level: 2,
       }),
     ).toBeInTheDocument();
     expect(

@@ -9,7 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Brain, Users, Clock, Zap } from "lucide-react";
+import { Brain, Users, Clock, Zap, Eye } from "lucide-react";
 
 interface Level {
   id: string;
@@ -391,9 +391,9 @@ export function RadialDiagram({ levels }: RadialDiagramProps) {
           </div>
         </div>
 
-        {/* Side panel for selected level */}
-        {selectedLevel && (
-          <div className="w-80">
+        {/* Side panel for selected level or empty state */}
+        <div className="w-80">
+          {selectedLevel ? (
             <Card>
               <CardHeader>
                 {(() => {
@@ -483,8 +483,26 @@ export function RadialDiagram({ levels }: RadialDiagramProps) {
                 })()}
               </CardContent>
             </Card>
-          </div>
-        )}
+          ) : (
+            <Card className="border-dashed opacity-75">
+              <CardContent className="py-8 text-center space-y-3">
+                <Eye
+                  className="w-8 h-8 text-gray-400 mx-auto"
+                  aria-hidden="true"
+                />
+                <div>
+                  <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    No level selected
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Click any ring in the diagram to explore that relationship
+                    layer, or hover over them to see details.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );

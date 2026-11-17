@@ -96,7 +96,7 @@ function AppContent() {
 
       {/* initial={false}: the first page renders without a fade-in (LCP). */}
       <AnimatePresence mode="wait" initial={false}>
-        <motion.div
+        <motion.main
           key={location.pathname}
           initial="initial"
           animate="in"
@@ -104,6 +104,8 @@ function AppContent() {
           variants={liquidPageVariants}
           transition={liquidPageTransition}
           className="relative z-10"
+          id="main"
+          role="main"
         >
           <Suspense
             fallback={
@@ -142,7 +144,7 @@ function AppContent() {
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
-        </motion.div>
+        </motion.main>
       </AnimatePresence>
     </div>
   );
