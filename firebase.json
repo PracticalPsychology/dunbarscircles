@@ -16,9 +16,6 @@
       },
       { "source": "/contacts/**", "destination": "/index.html" }
     ],
-    "redirects": [
-      { "source": "/firebase-test", "destination": "/404.html", "code": 404 }
-    ],
     "headers": [
       {
         "source": "/@(onboarding|radial|levels|network|digital|lifecycle|dashboard|contacts|sitemap|privacy|about|evidence)",
