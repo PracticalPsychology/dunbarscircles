@@ -3,7 +3,7 @@
  *
  * - Nothing is loaded or sent until the visitor explicitly accepts.
  * - "Do Not Track" and Global Privacy Control are honoured.
- * - Event names are a closed set so the event dictionary in docs/ANALYTICS.md
+ * - Event names are a closed set so the event dictionary in docs/ops/ANALYTICS.md
  *   stays the single source of truth.
  */
 
@@ -25,6 +25,7 @@ export const OPEN_CONSENT_EVENT = "dc:open-consent";
 
 let analyticsInstance: import("firebase/analytics").Analytics | null = null;
 let initPromise: Promise<void> | null = null;
+let analyticsSdk: typeof import("firebase/analytics") | null = null;
 
 export function getConsent(): ConsentState {
   try {
@@ -48,31 +49,42 @@ export function setConsent(value: "granted" | "denied"): void {
     /* storage unavailable: consent simply does not persist */
   }
   if (value === "granted") void initAnalytics();
-  else analyticsInstance = null;
+  else if (analyticsInstance) {
+    analyticsSdk?.setAnalyticsCollectionEnabled(analyticsInstance, false);
+  }
 }
 
 export function initAnalytics(): Promise<void> {
-  if (initPromise) return initPromise;
   if (getConsent() !== "granted" || browserForbidsTracking()) {
     return Promise.resolve();
   }
+  if (analyticsInstance && analyticsSdk) {
+    analyticsSdk.setAnalyticsCollectionEnabled(analyticsInstance, true);
+    return Promise.resolve();
+  }
+  if (initPromise) return initPromise;
   // Firebase is imported only after consent, so it never loads on first
   // paint for visitors who have not opted in (#76).
   initPromise = Promise.all([
     import("../firebase-config"),
     import("firebase/analytics"),
   ])
-    .then(([{ app, firebaseConfig }, { getAnalytics }]) => {
+    .then(([{ app, firebaseConfig }, sdk]) => {
       if (!app || !firebaseConfig.measurementId) return;
-      analyticsInstance = getAnalytics(app);
+      if (getConsent() !== "granted" || browserForbidsTracking()) return;
+      analyticsInstance = sdk.getAnalytics(app);
+      analyticsSdk = sdk;
     })
     .catch(() => {
       analyticsInstance = null;
+    })
+    .finally(() => {
+      initPromise = null;
     });
   return initPromise;
 }
 
-/** Append UTM parameters to a link we control (see docs/ANALYTICS.md). */
+/** Append UTM parameters to a link we control (see docs/ops/ANALYTICS.md). */
 export function withUtm(
   url: string,
   p: { source: string; medium: string; campaign: string; content?: string },
@@ -111,9 +123,12 @@ export function trackEvent(
   name: AnalyticsEvent,
   params?: Record<string, string | number | boolean>,
 ): void {
-  if (!analyticsInstance) return;
-  const safe = sanitizeParams(params);
-  void import("firebase/analytics").then(({ logEvent }) => {
-    if (analyticsInstance) logEvent(analyticsInstance, name, safe);
-  });
+  if (
+    !analyticsInstance ||
+    getConsent() !== "granted" ||
+    browserForbidsTracking()
+  ) {
+    return;
+  }
+  analyticsSdk?.logEvent(analyticsInstance, name, sanitizeParams(params));
 }

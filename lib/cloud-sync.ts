@@ -60,18 +60,44 @@ const PUSH_DEBOUNCE_MS = 800;
 // Browser store access
 // ---------------------------------------------------------------------------
 
+function readStoredContacts(): unknown {
+  const raw =
+    localStorage.getItem(CONTACTS_STORAGE_KEY) ??
+    sessionStorage.getItem(CONTACTS_STORAGE_KEY);
+  return raw === null ? [] : JSON.parse(raw);
+}
+
+function hasContactId(value: unknown): value is RawContact {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "id" in value &&
+    typeof value.id === "string" &&
+    value.id.length > 0
+  );
+}
+
 export function readLocalContacts(): RawContact[] {
   try {
-    const raw =
-      localStorage.getItem(CONTACTS_STORAGE_KEY) ??
-      sessionStorage.getItem(CONTACTS_STORAGE_KEY);
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed)
-      ? parsed.filter((c) => c && typeof c.id === "string")
-      : [];
+    const parsed = readStoredContacts();
+    return Array.isArray(parsed) ? parsed.filter(hasContactId) : [];
   } catch {
     return [];
   }
+}
+
+/** A failed or partial read must never become a deletion in the cloud mirror. */
+function readContactsForSync(): RawContact[] {
+  try {
+    const contacts = readStoredContacts();
+    if (Array.isArray(contacts) && contacts.every(hasContactId))
+      return contacts;
+  } catch {
+    // The browser can deny storage access or hold a malformed snapshot.
+  }
+  throw new Error(
+    "This browser's contacts could not be read. Cloud backup was not changed.",
+  );
 }
 
 function writeLocalContacts(contacts: RawContact[]): void {
@@ -100,6 +126,7 @@ let inFlight: Promise<void> | null = null;
 let pushTimer: ReturnType<typeof setTimeout> | null = null;
 let pushAgain = false;
 let started = false;
+let syncGeneration = 0;
 
 export type SyncState =
   | "signed-out"
@@ -134,23 +161,26 @@ export async function syncOnSignIn(uid: string): Promise<void> {
     state = "off";
     return;
   }
+  const generation = syncGeneration;
   state = "syncing";
   try {
-    const local = readLocalContacts();
+    const local = readContactsForSync();
     const { merged } = await syncUser(
       db,
       uid,
       local,
       (list) => migrateContactsUp(list) as RawContact[],
     );
+    if (syncGeneration !== generation || currentUid !== uid) return;
+    if (!hasCloudConsent(uid)) return;
     if (JSON.stringify(merged) !== JSON.stringify(local)) {
       writeLocalContacts(merged);
     }
-    if (currentUid !== uid) return; // signed out meanwhile
     readyUid = uid;
     state = "synced";
     lastError = null;
   } catch (e) {
+    if (syncGeneration !== generation || currentUid !== uid) return;
     state = "error";
     lastError = e instanceof Error ? e.message : String(e);
     console.warn("Cloud sync failed; contacts are safe in this browser:", e);
@@ -177,7 +207,7 @@ export async function pushNow(): Promise<{
     const result = await pushUser(
       db,
       uid,
-      readLocalContacts().filter((c) => !isBuiltInDemo(c)),
+      readContactsForSync().filter((c) => !isBuiltInDemo(c)),
     );
     state = "synced";
     lastError = null;
@@ -245,6 +275,7 @@ export function resolveOwnerConflict(
 
 /** Stop all pending and future pushes until sync is started again. */
 export function pauseSync(): void {
+  syncGeneration++;
   if (pushTimer) clearTimeout(pushTimer);
   pushTimer = null;
   pushAgain = false;
@@ -313,11 +344,9 @@ export function startCloudSync(): void {
   started = true;
   onAuthStateChanged(auth, (user) => {
     currentUid = user?.uid ?? null;
-    if (!user) {
-      readyUid = null;
-      state = "signed-out";
-      return;
-    }
+    pauseSync();
+    clearOwnerConflict();
+    if (!user) return;
     void syncOnSignIn(user.uid); // no-op until the user turns backup on
   });
   if (typeof window !== "undefined") {
@@ -326,10 +355,7 @@ export function startCloudSync(): void {
     window.addEventListener(CLOUD_CONSENT_CHANGED_EVENT, () => {
       if (!currentUid) return;
       if (hasCloudConsent(currentUid)) void syncOnSignIn(currentUid);
-      else {
-        readyUid = null;
-        state = "off";
-      }
+      else pauseSync();
     });
   }
 }

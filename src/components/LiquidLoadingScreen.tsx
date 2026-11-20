@@ -4,7 +4,7 @@ interface LiquidLoadingScreenProps {
   skipDelay?: boolean;
 }
 
-const LiquidLoadingScreen = ({}: LiquidLoadingScreenProps) => {
+const LiquidLoadingScreen = (_props: LiquidLoadingScreenProps) => {
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-cyan-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 flex items-center justify-center z-50">
       {/* Animated liquid blobs */}

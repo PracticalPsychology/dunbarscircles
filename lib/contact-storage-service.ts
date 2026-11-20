@@ -13,6 +13,7 @@
 
 import type { Person } from "../types/relationships";
 import type { Contact, ContactForm, ContactUpdate } from "./contact-models";
+import { parseCsv } from "./csv";
 import { sanitizeContactData, validateContactData } from "./contact-models";
 import { auth } from "../firebase-config";
 import { onAuthStateChanged, type User } from "firebase/auth";
@@ -109,13 +110,9 @@ export class ContactStorageService {
     contacts: StoredContact[],
   ): Promise<ContactOperationResult<StoredContact[]>> {
     try {
-      let existingContacts: StoredContact[] = [];
-
-      // Load existing contacts
       const existingResult = await this.loadFromLocalStorage();
-      if (existingResult.success && existingResult.data) {
-        existingContacts = existingResult.data;
-      }
+      if (!existingResult.success) return existingResult;
+      const existingContacts = existingResult.data ?? [];
 
       // Update or add contacts
       for (const contact of contacts) {
@@ -1507,8 +1504,8 @@ export class ContactStorageService {
           tags: contact.tags || ["imported"],
         }));
       } else if (format === "csv") {
-        const lines = data.split("\n").filter((line) => line.trim());
-        if (lines.length < 2) {
+        const rows = parseCsv(data);
+        if (rows.length < 2) {
           return {
             success: false,
             error: "Invalid CSV format: no data rows found",
@@ -1516,9 +1513,7 @@ export class ContactStorageService {
           };
         }
 
-        const headers = lines[0]
-          .split(",")
-          .map((h) => h.replace(/"/g, "").trim());
+        const headers = rows[0].map((h) => h.trim());
         const nameIndex = headers.findIndex((h) =>
           h.toLowerCase().includes("name"),
         );
@@ -1543,11 +1538,9 @@ export class ContactStorageService {
           };
         }
 
-        for (let i = 1; i < lines.length; i++) {
+        for (let i = 1; i < rows.length; i++) {
           try {
-            const values = lines[i]
-              .split(",")
-              .map((v) => v.replace(/"/g, "").trim());
+            const values = rows[i].map((v) => v.trim());
 
             contactsToImport.push({
               name: values[nameIndex] || "Unknown",

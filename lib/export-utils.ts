@@ -149,7 +149,7 @@ const escapeCSVField = (value: unknown): string => {
   let escaped = str.replace(/"/g, '""');
 
   // Prefix with single quote if value starts with formula injection characters
-  if (/^[\=\+\-\@\t\r]/.test(escaped)) {
+  if (/^[=+@\t\r-]/.test(escaped)) {
     escaped = "'" + escaped;
   }
 

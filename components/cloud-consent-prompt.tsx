@@ -70,10 +70,15 @@ export function CloudConsentPrompt() {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => choose("declined")}>
-            Not now
-          </AlertDialogCancel>
-          <AlertDialogAction onClick={() => choose("granted")}>
+          <AlertDialogCancel>Not now</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(event) => {
+              // The controlled dialog closes in choose(). Skip Radix's
+              // default close, which records a dismissal in onOpenChange.
+              event.preventDefault();
+              choose("granted");
+            }}
+          >
             Turn on cloud backup
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -90,6 +90,14 @@ describe("ContactStorageService", () => {
       expect(result.data?.updatedAt).toBeInstanceOf(Date);
     });
 
+    it("preserves the existing store when it cannot be parsed", async () => {
+      localStorage.setItem("yakw_contacts", "{invalid");
+      const result = await contactStorage.createContact(sampleContactData);
+
+      expect(result.success).toBe(false);
+      expect(localStorage.getItem("yakw_contacts")).toBe("{invalid");
+    });
+
     it("should read all contacts", async () => {
       // Create a contact first
       await contactStorage.createContact(sampleContactData);

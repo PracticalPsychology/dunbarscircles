@@ -78,64 +78,16 @@ The application automatically detects which format is being imported:
 2. **Fallback**: If only `friends.data` is present, the legacy format will be processed
 3. **Error**: If neither format is found, an error will be thrown
 
-### Relationship Strength Calculation
+### Imported contacts
 
-The application calculates relationship strength differently based on available data:
-
-#### New Format (friends_v2)
-
-- **Base strength**: 0.5
-- **Recent connection bonus**: +0.2 (if contacted within last year)
-- **Total possible**: 0.7
-
-#### Legacy Format (friends.data)
-
-- **Base strength**: 0.5
-- **Recent connection bonus**: +0.2 (if contacted within last year)
-- **Email available**: +0.1
-- **About information**: +0.1
-- **Location information**: +0.05
-- **Total possible**: 0.95
-
-### Data Mapping
-
-Both formats map to the same internal structure:
-
-```typescript
-interface Person {
-  id: string; // Generated: fb_{timestamp}_{index}
-  name: string; // From friend.name
-  levelId: string; // Assigned during categorization
-  lastContact: Date; // From friend.timestamp (converted from Unix)
-  contactFrequency: number; // Calculated based on relationship strength
-  strength: number; // Calculated as described above
-  decayRate: number; // Default: 0.1
-  platform: string; // Set to "facebook"
-}
-```
+Both Facebook formats start in the Recognition Group. You can move each contact to a different circle after import. The app does not infer a circle or attachment from Facebook metadata. The legacy format can also supply an email address from `contact_info.email` and notes from `about`.
 
 ## Usage
 
-### File Upload
-
-Users can upload either format through the import dialog:
-
-1. Click "Import Social Graph Data"
-2. Select Facebook JSON file
-3. The application will automatically detect and process the format
-4. Contacts will be categorized into Dunbar levels based on relationship strength
-
-### Sample Files
-
-- **New format**: `data/facebook_friends_v2.json`
-- **Legacy format**: `data/facebook_friends.json`
-
-## Migration Notes
-
-- **Backward compatibility**: Existing imports using the old format will continue to work
-- **Forward compatibility**: New Facebook exports will be automatically supported
-- **No action required**: Users don't need to do anything - the format detection is automatic
-- **Data quality**: Legacy format provides richer relationship strength calculation due to additional metadata
+1. Open **Contacts** and go to **Import Contacts**.
+2. Select your Facebook JSON file.
+3. Preview the records and confirm the import.
+4. Open an individual contact to update their circle or add relationship details.
 
 ## Testing
 

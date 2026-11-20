@@ -1,5 +1,5 @@
 /**
- * Emotional-relationship model (spec: docs/RELATIONSHIP_MODEL.md).
+ * Emotional-relationship model (spec: docs/ops/RELATIONSHIP_MODEL.md).
  *
  *   R_i = (D_i, V_i, A_i, F_i, Q_i, T_i)
  *   D  assigned cumulative social layer       -> contact.levelId (user-assigned)

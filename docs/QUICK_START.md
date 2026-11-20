@@ -20,7 +20,7 @@
 1. Go to [Contacts](/contacts)
 2. Click "Import Data"
 3. Upload Facebook JSON or LinkedIn CSV
-4. Review auto-categorization
+4. Review the import preview
 5. Adjust as needed
 
 ### Step 4: Explore Visualizations
@@ -33,7 +33,7 @@
 
 - Add contacts manually in [Contacts](/contacts)
 - Edit relationship details and categories
-- Track contact frequency and relationship health
+- Record interactions and review relationship changes
 - Export your data for backup
 
 ## 🎯 Key Features at a Glance

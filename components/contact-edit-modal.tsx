@@ -45,23 +45,8 @@ export function ContactEditModal({
   };
 
   const handleSave = async (data: ContactFormData) => {
-    try {
-      if (contact) {
-        // Update existing contact - add the id to the form data
-        const updateData = {
-          ...data,
-          id: contact.id,
-        };
-        await onSave(updateData);
-      } else {
-        // Create new contact
-        await onSave(data);
-      }
-      handleOpenChange(false);
-    } catch (error) {
-      // Error handling is done in ContactForm component
-      throw error;
-    }
+    await onSave(contact ? { ...data, id: contact.id } : data);
+    handleOpenChange(false);
   };
 
   const handleCancel = () => {

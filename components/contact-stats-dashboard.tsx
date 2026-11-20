@@ -89,7 +89,7 @@ function NameList({
  * Contacts overview built only from what the user entered: who is in the
  * inner circle, how the other circles look, how complete and valid the
  * data is, how often voluntary contact happens, and who they love or hate.
- * No scores are derived from contact frequency (docs/RELATIONSHIP_MODEL.md).
+ * No scores are derived from contact frequency (docs/ops/RELATIONSHIP_MODEL.md).
  */
 export function ContactStatsDashboard({
   contacts,

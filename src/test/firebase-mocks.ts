@@ -71,24 +71,16 @@ export const mockSignOut = vi.fn(async (auth: any) => {
   // auth parameter is intentionally unused in mock
   void auth;
 
-  try {
-    // Clear authentication state
-    currentAuthUser = null;
-    mockAuth.currentUser = null;
+  currentAuthUser = null;
+  mockAuth.currentUser = null;
 
-    // Notify all auth state listeners
-    authStateCallbacks.forEach((callback) => {
-      try {
-        callback(null);
-      } catch (error) {
-        console.warn("Auth state callback error:", error);
-      }
-    });
-
-    return Promise.resolve();
-  } catch (error) {
-    throw error;
-  }
+  authStateCallbacks.forEach((callback) => {
+    try {
+      callback(null);
+    } catch (error) {
+      console.warn("Auth state callback error:", error);
+    }
+  });
 });
 
 export const mockOnAuthStateChanged = vi.fn(

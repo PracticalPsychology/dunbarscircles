@@ -7,32 +7,32 @@ Welcome to the Dunbar's Circles documentation! This index will help you find the
 ### For New Users
 
 - **[Quick Start Guide](QUICK_START.md)** - Get up and running in 5 minutes
-- **[Interactive Tutorial](/onboarding)** - Step-by-step guided tour (recommended)
+- **[Interactive Tutorial](https://dunbarscircles.com/onboarding)** - Step-by-step guided tour (recommended)
 - **[FAQ](FAQ.md)** - Answers to common questions
 
 ### Comprehensive Guides
 
 - **[User Guide](USER_GUIDE.md)** - Complete documentation for all features
-- **[README](README.md)** - Project overview and technical details
+- **[README](../README.md)** - Project overview and technical details
 
 ### Technical Documentation
 
-- **[Database Integration](DATABASE_INTEGRATION.md)** - Data storage and management
-- **[Export Functionality](EXPORT_FUNCTIONALITY.md)** - Export features and formats
-- **[Firebase Integration](FIREBASE_INTEGRATION.md)** - Authentication and cloud features
+- **[Database Integration](ops/DATA_FLOWS.md)** - Data storage and management
+- **[Export Functionality](USER_GUIDE.md#data-export-options)** - Export features and formats
+- **[Firebase Integration](ops/FIREBASE_INTEGRATION.md)** - Authentication and cloud features
 
 ## 🎯 Choose Your Path
 
 ### I'm completely new to Dunbar's Circles
 
-1. Start with the **[Interactive Tutorial](/onboarding)** in the app
+1. Start with the **[Interactive Tutorial](https://dunbarscircles.com/onboarding)** in the app
 2. Read the **[Quick Start Guide](QUICK_START.md)** for essential info
 3. Check the **[FAQ](FAQ.md)** for common questions
 
 ### I want to understand all features
 
 1. Read the **[User Guide](USER_GUIDE.md)** for comprehensive coverage
-2. Use the **[Interactive Tutorial](/onboarding)** for hands-on learning
+2. Use the **[Interactive Tutorial](https://dunbarscircles.com/onboarding)** for hands-on learning
 3. Refer to **[FAQ](FAQ.md)** when you have specific questions
 
 ### I need help with a specific issue
@@ -43,8 +43,8 @@ Welcome to the Dunbar's Circles documentation! This index will help you find the
 
 ### I'm a developer or technical user
 
-1. Start with the **[README](README.md)** for project overview
-2. Review technical docs: **[Database Integration](DATABASE_INTEGRATION.md)**, **[Export Functionality](EXPORT_FUNCTIONALITY.md)**, **[Firebase Integration](FIREBASE_INTEGRATION.md)**
+1. Start with the **[README](../README.md)** for project overview
+2. Review technical docs: **[Database Integration](ops/DATA_FLOWS.md)**, **[Export Functionality](USER_GUIDE.md#data-export-options)**, **[Firebase Integration](ops/FIREBASE_INTEGRATION.md)**
 3. Check the source code for implementation details
 
 ## 🔍 Quick Reference
@@ -53,7 +53,7 @@ Welcome to the Dunbar's Circles documentation! This index will help you find the
 
 - **Dunbar's Number**: ~150 stable relationships humans can maintain
 - **Five Levels**: Inner Circle (5) → Sympathy Group (15) → Affinity Group (50) → Active Network (150) → Recognition Group (500)
-- **Local First**: Data is stored in your browser; cloud backup only if you sign in
+- **Local First**: Data is stored in your browser; cloud backup requires sign-in and explicit opt-in
 
 ### Essential Pages
 
@@ -98,10 +98,9 @@ docs/
 ├── USER_GUIDE.md         # Comprehensive user documentation
 ├── QUICK_START.md        # Essential information for new users
 ├── FAQ.md                # Frequently asked questions
-├── README.md             # Project overview and features
-├── DATABASE_INTEGRATION.md    # Technical: data storage
-├── EXPORT_FUNCTIONALITY.md   # Technical: export features
-└── FIREBASE_INTEGRATION.md   # Technical: authentication
+└── ops/
+    ├── DATA_FLOWS.md
+    └── FIREBASE_INTEGRATION.md
 ```
 
 ## 🔄 Keeping Documentation Updated
@@ -128,9 +127,7 @@ We welcome contributions to improve the documentation:
 
 **Ready to get started?**
 
-- **New users**: Begin with the [Interactive Tutorial](/onboarding)
+- **New users**: Begin with the [Interactive Tutorial](https://dunbarscircles.com/onboarding)
 - **Quick reference**: Check the [Quick Start Guide](QUICK_START.md)
 - **Comprehensive learning**: Read the [User Guide](USER_GUIDE.md)
 - **Specific questions**: Browse the [FAQ](FAQ.md)
-
-_Last updated: [Current Date]_

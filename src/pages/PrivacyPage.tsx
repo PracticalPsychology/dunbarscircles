@@ -45,16 +45,16 @@ export default function PrivacyPage() {
 
         <section aria-labelledby="p-analytics" className="space-y-2">
           <h2 id="p-analytics" className="text-xl font-semibold">
-            Analytics (opt-in)
+            Analytics and session recording
           </h2>
           <p>
-            Analytics is off until you choose &quot;Allow analytics&quot;, and
-            nothing is loaded from Google Analytics before that. If you allow
-            it, Google Analytics for Firebase records anonymous usage events
-            such as which pages and buttons are used, plus coarse device and
-            country information. It never receives your contacts. We respect the
-            Do Not Track and Global Privacy Control browser signals and keep
-            nothing when either is on. Change your mind at any time with
+            Microsoft Clarity runs on every visit. It records anonymised
+            interactions (clicks, scrolling, heatmaps and session replays) and
+            device information so we can see where visitors get stuck. It never
+            receives your contacts, which stay in your browser. Google
+            Analytics for Firebase is separate: it is off until you choose
+            &quot;Allow analytics&quot;, and we respect the Do Not Track and
+            Global Privacy Control signals for it. Change your mind at any time with
             &quot;Privacy choices&quot; in the footer.
           </p>
         </section>

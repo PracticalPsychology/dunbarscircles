@@ -381,7 +381,7 @@ export function RelationshipInventory({ levels }: RelationshipInventoryProps) {
   // Auto-categorization logic based on relationship strength and recency
   // Imported people are never auto-placed by strength, recency or
   // feelings. Everyone starts in the outermost layer (people you recognise),
-  // and the user moves them. See docs/RELATIONSHIP_MODEL.md.
+  // and the user moves them. See docs/ops/RELATIONSHIP_MODEL.md.
   const categorizePerson = (_person: Person): string => "recognition-group";
 
   const handleFileUpload = async (

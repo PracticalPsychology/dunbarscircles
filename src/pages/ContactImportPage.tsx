@@ -26,6 +26,7 @@ import { Facebook, Linkedin } from "../../components/brand-icons";
 import type { StoredContact } from "@/lib/contact-storage-service";
 import { ContactStorageService } from "@/lib/contact-storage-service";
 import { trackEvent } from "@/lib/analytics";
+import { parseCsv } from "@/lib/csv";
 import { withChangeSource } from "@/lib/relationship-log";
 
 interface ImportStats {
@@ -83,16 +84,16 @@ export default function ContactImportPage() {
   };
 
   const parseCSVFile = (content: string): ImportedContact[] => {
-    const lines = content.split("\n").filter((line) => line.trim());
-    if (lines.length < 2)
+    const rows = parseCsv(content);
+    if (rows.length < 2)
       throw new Error("CSV file must have at least a header and one data row");
 
-    const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
+    const headers = rows[0].map((h) => h.trim().toLowerCase());
     const contacts: ImportedContact[] = [];
     const now = new Date();
 
-    for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(",").map((v) => v.trim().replace(/"/g, ""));
+    for (let i = 1; i < rows.length; i++) {
+      const values = rows[i].map((v) => v.trim());
 
       if (values.length < headers.length) continue; // Skip incomplete rows
 
@@ -101,7 +102,7 @@ export default function ContactImportPage() {
         id: `import_${Date.now()}_${i}`,
         name: "",
         // Fixed default, never inferred: everyone starts in the outermost
-        // layer and the user places them (docs/RELATIONSHIP_MODEL.md).
+        // layer and the user places them (docs/ops/RELATIONSHIP_MODEL.md).
         levelId: "recognition-group",
         lastContact: now,
         contactFrequency: 90, // Default quarterly

@@ -74,15 +74,9 @@ Currently supported:
 
 More platforms may be added in future updates.
 
-### How accurate is the auto-categorization?
+### How do imported contacts get their circles?
 
-The auto-categorization makes educated guesses based on:
-
-- Connection dates
-- Available interaction data
-- Platform context (professional vs personal)
-
-However, you know your relationships best! Always review and adjust the categories as needed.
+Facebook and LinkedIn contacts start in the Recognition Group. Open a contact to choose a circle based on how you know them.
 
 ### Can I use Dunbar's Circles without importing social media data?
 

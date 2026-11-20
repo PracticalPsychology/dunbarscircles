@@ -26,11 +26,13 @@ vi.mock("../../../lib/cloud-sync-core", async (orig) => ({
 
 import {
   deleteCloudCopy,
+  pushNow,
   resetThisDevice,
   resolveOwnerConflict,
   startCloudSync,
   turnOffCloudBackup,
 } from "../../../lib/cloud-sync";
+import { pushUser, syncUser } from "../../../lib/cloud-sync-core";
 import { hasCloudConsent, setCloudConsent } from "../../../lib/cloud-consent";
 import {
   getLocalOwner,
@@ -101,6 +103,43 @@ describe("cloud sync: delete, turn off, reset, owner conflict", () => {
 
     deleteAllForUser.mockResolvedValue({ deleted: 3 });
     await resetThisDevice({ deleteCloud: true });
+    expect(localStorage.getItem("yakw_contacts")).toBeNull();
+  });
+
+  it("never mirrors an unreadable browser snapshot as an empty list", async () => {
+    authCallback?.({ uid: "A" });
+    setCloudConsent("A", "granted");
+    await Promise.resolve();
+    localStorage.setItem("yakw_contacts", "{invalid");
+
+    await expect(pushNow()).rejects.toThrow(/contacts could not be read/i);
+
+    expect(pushUser).not.toHaveBeenCalled();
+    expect(localStorage.getItem("yakw_contacts")).toBe("{invalid");
+  });
+
+  it("ignores a sign-in merge that completes after a device reset", async () => {
+    let finishSync:
+      | ((result: Awaited<ReturnType<typeof syncUser>>) => void)
+      | undefined;
+    vi.mocked(syncUser).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finishSync = resolve;
+        }),
+    );
+
+    authCallback?.({ uid: "A" });
+    setCloudConsent("A", "granted");
+    await resetThisDevice({ deleteCloud: false });
+    finishSync?.({
+      merged: [{ id: "c1", name: "Sample contact" }],
+      upserted: 1,
+      deleted: 0,
+      migrated: 0,
+    });
+    await Promise.resolve();
+
     expect(localStorage.getItem("yakw_contacts")).toBeNull();
   });
 

@@ -81,7 +81,7 @@ export const contactFormSchema = z.object({
 
   phone: z
     .string()
-    .regex(/^[\+]?[1-9][\d]{0,15}$/, "Invalid phone number format")
+    .regex(/^[+]?[1-9][\d]{0,15}$/, "Invalid phone number format")
     .optional()
     .or(z.literal("")),
 
@@ -136,7 +136,7 @@ export const contactUpdateSchema = z.object({
 
   phone: z
     .string()
-    .regex(/^[\+]?[1-9][\d]{0,15}$/, "Invalid phone number format")
+    .regex(/^[+]?[1-9][\d]{0,15}$/, "Invalid phone number format")
     .optional()
     .or(z.literal("")),
 
@@ -197,7 +197,7 @@ export const sanitizeContactData = {
       .trim()
       .replace(/<[^>]*>/g, "") // Remove HTML tags
       .replace(/\s+/g, " ") // Replace multiple spaces with single space
-      .replace(/[^\p{L}\p{N}\s\-'\.]/gu, "") // Remove special chars, keep Unicode letters and numbers
+      .replace(/[^\p{L}\p{N}\s'.-]/gu, "") // Remove special chars, keep Unicode letters and numbers
       .substring(0, 100); // Truncate to max length
 
     // Reject empty names after sanitizing
@@ -220,7 +220,7 @@ export const sanitizeContactData = {
   phone: (phone: string): string => {
     return phone
       .trim()
-      .replace(/[^\d\+]/g, "") // Keep only digits and +
+      .replace(/[^\d+]/g, "") // Keep only digits and +
       .substring(0, 16); // International format max length
   },
 
@@ -241,7 +241,7 @@ export const sanitizeContactData = {
     return platform
       .trim()
       .toLowerCase()
-      .replace(/[^\w\s\-]/g, "") // Remove special characters
+      .replace(/[^\w\s-]/g, "") // Remove special characters
       .substring(0, 50); // Truncate to max length
   },
 
